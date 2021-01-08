@@ -1,6 +1,6 @@
 import { Component } from "react";
 import "./App.css";
-import { Dashboard, Signup } from "./components";
+import { Dashboard, NavBar, Signup } from "./components";
 
 interface AppState {
   isAuthenticated: boolean;
@@ -36,28 +36,45 @@ class App extends Component {
     this.setState({ [field]: value });
   };
 
+  logoutAction = () => {
+    localStorage.removeItem("USER");
+    localStorage.removeItem("SESSION");
+    localStorage.removeItem("STORE");
+    localStorage.removeItem("DISPATCH_RIDER");
+
+    this.setState({
+      isAuthenticated: false,
+      user: null,
+      store: null,
+      dispatchRider: null,
+    });
+  };
+
   render() {
     const { isAuthenticated, user, dispatchRider, store } = this.state;
     console.log(store, dispatchRider);
 
     return (
-      <div className="container">
-        {isAuthenticated ? (
-          <Dashboard
-            merchant={user!}
-            dispatchRider={dispatchRider!}
-            store={store!}
-            updateAppState={(
-              field: "store" | "dispatchRider",
-              value: Store | DispatchRider
-            ) => this.updateAppState(field, value)}
-          />
-        ) : (
-          <Signup
-            setAuthentication={() => this.setState({ isAuthenticated: true })}
-          />
-        )}
-      </div>
+      <>
+        <NavBar isAuthenticated={isAuthenticated} logout={this.logoutAction} />
+        <div className="container">
+          {isAuthenticated ? (
+            <Dashboard
+              merchant={user!}
+              dispatchRider={dispatchRider!}
+              store={store!}
+              updateAppState={(
+                field: "store" | "dispatchRider",
+                value: Store | DispatchRider
+              ) => this.updateAppState(field, value)}
+            />
+          ) : (
+            <Signup
+              setAuthentication={() => this.setState({ isAuthenticated: true })}
+            />
+          )}
+        </div>
+      </>
     );
   }
 }

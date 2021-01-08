@@ -107,6 +107,11 @@ export const requestAccountApproval = async (
   });
 
   if (!response || !response.ok || !response.data) {
+    console.log({
+      problem: response.problem,
+      status: response.status,
+      data: response.data,
+    });
     return res
       .status(response?.status || 500)
       .send({ error: response.data?.message });
