@@ -22,3 +22,6 @@ interface DispatchRider {
   address: string;
   phone: string;
 }
+
+type AppStateFields = "store" | "dispatchRider" | "merchant";
+type AppStateValues = Store | DispatchRider | Merchant;

@@ -5,10 +5,7 @@ interface DashboardProps {
   merchant: Merchant;
   store: Store;
   dispatchRider: DispatchRider;
-  updateAppState: (
-    field: "store" | "dispatchRider",
-    value: Store | DispatchRider
-  ) => void;
+  updateAppState: (field: AppStateFields, value: AppStateValues) => void;
 }
 
 export const Dashboard = ({
@@ -79,14 +76,14 @@ export const Dashboard = ({
     setFormState({ ...formState, loading: false });
   };
 
-  const showAccountApproveAction = (user: Merchant, store: Store) => {
+  const showAccountApproveAction = (merchant: Merchant, store: Store) => {
     if (!store || (store && !store.approved)) {
       return (
         <div className="text-center mb-5">
           <p>
-            Hi {user?.firstName}, Your account is pending approval, a $20 fee is
-            required for approval, If you just recently made payment, Ignore
-            this action while we confirm the payment
+            Hi {merchant?.firstName}, Your account is pending approval, a $20
+            fee is required for approval, If you just recently made payment,
+            Ignore this action while we confirm the payment
           </p>
           <button
             className="btn btn-primary"

@@ -27,6 +27,23 @@ export const create = async ({
   );
 };
 
+export const login = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
+  const api = apisauce.create({
+    baseURL: consts.SERVER_URL,
+  });
+
+  return api.post<MerchantLoginResponse, GeneralApiError>("/merchants/login", {
+    email,
+    password,
+  });
+};
+
 export const approveAccount = async () => {
   const session: Session = JSON.parse(localStorage.getItem("SESSION")!);
 

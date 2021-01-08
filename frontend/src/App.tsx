@@ -4,54 +4,52 @@ import { Dashboard, NavBar, Signup } from "./components";
 
 interface AppState {
   isAuthenticated: boolean;
-  user: Merchant | null;
+  merchant: Merchant | null;
   store: Store | null;
   dispatchRider: DispatchRider | null;
 }
+
 class App extends Component {
   state: AppState = {
     isAuthenticated: false,
-    user: null,
+    merchant: null,
     store: null,
     dispatchRider: null,
   };
 
   componentDidMount() {
-    const user: Merchant = JSON.parse(localStorage.getItem("USER")!);
+    const merchant: Merchant = JSON.parse(localStorage.getItem("MERCHANT")!);
     const session: Session = JSON.parse(localStorage.getItem("SESSION")!);
     const store: Store = JSON.parse(localStorage.getItem("STORE")!);
     const dispatchRider: DispatchRider = JSON.parse(
       localStorage.getItem("DISPATCH_RIDER")!
     );
 
-    if (user && session) {
-      this.setState({ isAuthenticated: true, user, store, dispatchRider });
+    if (merchant && session) {
+      this.setState({ isAuthenticated: true, merchant, store, dispatchRider });
     }
   }
 
-  updateAppState = (
-    field: "store" | "dispatchRider",
-    value: Store | DispatchRider
-  ) => {
+  updateAppState = (field: AppStateFields, value: AppStateValues) => {
     this.setState({ [field]: value });
   };
 
   logoutAction = () => {
-    localStorage.removeItem("USER");
+    localStorage.removeItem("MERCHANT");
     localStorage.removeItem("SESSION");
     localStorage.removeItem("STORE");
     localStorage.removeItem("DISPATCH_RIDER");
 
     this.setState({
       isAuthenticated: false,
-      user: null,
+      merchant: null,
       store: null,
       dispatchRider: null,
     });
   };
 
   render() {
-    const { isAuthenticated, user, dispatchRider, store } = this.state;
+    const { isAuthenticated, merchant, dispatchRider, store } = this.state;
     console.log(store, dispatchRider);
 
     return (
@@ -60,17 +58,19 @@ class App extends Component {
         <div className="container">
           {isAuthenticated ? (
             <Dashboard
-              merchant={user!}
+              merchant={merchant!}
               dispatchRider={dispatchRider!}
               store={store!}
-              updateAppState={(
-                field: "store" | "dispatchRider",
-                value: Store | DispatchRider
-              ) => this.updateAppState(field, value)}
+              updateAppState={(field: AppStateFields, value: AppStateValues) =>
+                this.updateAppState(field, value)
+              }
             />
           ) : (
             <Signup
               setAuthentication={() => this.setState({ isAuthenticated: true })}
+              updateAppState={(field: AppStateFields, value: AppStateValues) =>
+                this.updateAppState(field, value)
+              }
             />
           )}
         </div>
