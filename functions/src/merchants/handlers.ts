@@ -54,12 +54,12 @@ export const signup = async (req: express.Request, res: express.Response) => {
   await merchantsCollectionRef.doc(merchantId).set(newMerchant);
   await sessionsCollectionRef.doc(sessionId).set(newSession);
 
-  const [merchantDocRef, sessionDocRef] = await Promise.all([
+  const [merchantDocSnapshot, sessionDocSnapshot] = await Promise.all([
     merchantsCollectionRef.doc(merchantId).get(),
     sessionsCollectionRef.doc(sessionId).get(),
   ]);
-  const merchant = merchantDocRef.data() as MerchantEntity | undefined;
-  const session = sessionDocRef.data() as SessionEntity | undefined;
+  const merchant = merchantDocSnapshot.data() as MerchantEntity | undefined;
+  const session = sessionDocSnapshot.data() as SessionEntity | undefined;
 
   if (!merchant || !session) {
     return res.status(500).send({ error: "Something went wrong, Try again!" });
@@ -77,6 +77,85 @@ export const signup = async (req: express.Request, res: express.Response) => {
     session: {
       token: session.token,
     },
+  });
+};
+
+export const login = async (req: express.Request, res: express.Response) => {
+  const firestore = firebaseAdmin.firestore();
+  const merchantsCollectionRef = firestore.collection(
+    consts.MERCHANTS_COLLECTION
+  );
+  const sessionsCollectionRef = firestore.collection(
+    consts.SESSIONS_COLLECTION
+  );
+
+  const storesCollectionRef = firestore.collection(consts.STORES_COLLECTION);
+  const dispatchRidersCollectionRef = firestore.collection(
+    consts.DISPATCH_RIDERS_COLLECTION
+  );
+
+  const { email, password } = req.body;
+  const normalizedEmail = utils.normalizeEmail(email);
+
+  const merchantSnapshot = await merchantsCollectionRef
+    .where("normalizedEmail", "==", normalizedEmail)
+    .get();
+
+  if (merchantSnapshot.size < 1) {
+    return res.status(401).send({ error: "Incorrect email or password" });
+  }
+  const merchant = merchantSnapshot.docs.map((doc) =>
+    doc.data()
+  )[0] as MerchantEntity;
+
+  const isCorrectPassword = bcrypt.compareSync(password, merchant.password);
+
+  if (!isCorrectPassword) {
+    return res.status(401).send({ error: "Incorrect email or password" });
+  }
+
+  // create new session
+
+  const sessionId = uuid.v4();
+
+  const newSession: SessionEntity = {
+    id: sessionId,
+    merchantId: merchant.id,
+    token: uuid.v4(),
+    createdAt: firebaseAdmin.firestore.Timestamp.now(),
+  };
+
+  await sessionsCollectionRef.doc(sessionId).set(newSession);
+
+  // get session, store and dispatchRider
+  const [
+    storeDocSnapshot,
+    dispatchDocRiderSnapshot,
+    sessionDocSnapshot,
+  ] = await Promise.all([
+    storesCollectionRef.doc(merchant.id).get(),
+    dispatchRidersCollectionRef.doc(merchant.id).get(),
+    sessionsCollectionRef.doc(sessionId).get(),
+  ]);
+
+  const store = storeDocSnapshot.data() as StoreEntity;
+  const dispatchRider = dispatchDocRiderSnapshot.data() as DispatchRiderEntity;
+  const session = sessionDocSnapshot.data() as SessionEntity | undefined;
+
+  return res.send({
+    merchant: {
+      id: merchant.id,
+      approved: merchant.approved,
+      createdAt: merchant.createdAt.toDate(),
+      email: merchant.email,
+      firstName: merchant.firstName,
+      lastName: merchant.lastName,
+    },
+    session: {
+      token: session?.token,
+    },
+    store: store ?? null,
+    dispatchRider: dispatchRider ?? null,
   });
 };
 
@@ -134,7 +213,7 @@ export const createStore = async (
   const merchantId = req.user.id;
 
   const firestore = firebaseAdmin.firestore();
-  const storesCollectionRef = firestore.collection("stores");
+  const storesCollectionRef = firestore.collection(consts.STORES_COLLECTION);
 
   await storesCollectionRef.doc(merchantId).set({
     name,
@@ -148,5 +227,5 @@ export const createStore = async (
 
   const store = storeSnapshot.data() as StoreEntity | undefined;
 
-  res.send({ store, dispatchRider });
+  res.send({ store: store ?? null, dispatchRider: dispatchRider ?? null });
 };

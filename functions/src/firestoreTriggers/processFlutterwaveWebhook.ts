@@ -1,5 +1,6 @@
 import * as functions from "firebase-functions";
 import * as firebaseAdmin from "firebase-admin";
+import * as consts from "../consts";
 
 export const processFlutterwaveWebhook = async (
   snapshot: functions.firestore.QueryDocumentSnapshot,
@@ -34,7 +35,7 @@ export const processFlutterwaveWebhook = async (
       .set({ approved: true }, { merge: true });
   }
 
-  await db.collection("flutterwave_webhooks").doc(docId).set(
+  await db.collection(consts.FLUTTERWAVE_WEBHOOKS_COLLECTION).doc(docId).set(
     {
       processed: true,
       processedAt: firebaseAdmin.firestore.Timestamp.now(),
