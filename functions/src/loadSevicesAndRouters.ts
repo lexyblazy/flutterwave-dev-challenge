@@ -17,7 +17,7 @@ export const loadServicesAndRouters = (app: express.Application) => {
     }),
   });
 
-  app.use(cors({ origin: [consts.FRONTEND_DEV_URL] }));
+  app.use(cors({ origin: [consts.FRONTEND_DEV_URL, consts.FRONTEND_URL] }));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
