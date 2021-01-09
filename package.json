@@ -1,0 +1,15 @@
+{
+  "name": "flutterwave-challenge",
+  "version": "1.0.0",
+  "description": "Flutterwave challenge by Olalekan",
+  "main": "index.js",
+  "repository": "git@github.com:lexyblazy/flutterwave-dev-challenge.git",
+  "author": "lexyblazy <lexyblazy@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build:frontend": "cd frontend/ && yarn build",
+    "copy:frontend:assets": "rm -rf ./public && cp -R ./frontend/build . && mv build public",
+    "deploy:frontend": "yarn build:frontend && yarn copy:frontend:assets && firebase deploy --only hosting",
+    "deploy:server": "cd functions && firebase deploy --only functions"
+  }
+}
