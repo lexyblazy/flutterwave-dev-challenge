@@ -10,6 +10,10 @@
     "build:frontend": "cd frontend/ && yarn build",
     "copy:frontend:assets": "rm -rf ./public && cp -R ./frontend/build . && mv build public",
     "deploy:frontend": "yarn build:frontend && yarn copy:frontend:assets && firebase deploy --only hosting",
-    "deploy:server": "cd functions && firebase deploy --only functions"
+    "deploy:server": "cd functions && firebase deploy --only functions",
+    "deploy": "run-p deploy:*"
+  },
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
   }
 }
