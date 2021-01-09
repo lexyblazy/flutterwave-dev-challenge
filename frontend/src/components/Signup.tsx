@@ -153,7 +153,7 @@ export const Signup = ({
       >
         {formType[0].toUpperCase() + formType.slice(1)}
       </button>
-      <div>
+      <div style={{ cursor: "pointer" }}>
         {formType === "signup" ? (
           <small className="btn-link" onClick={() => setFormType("login")}>
             Already have an account? Login!
