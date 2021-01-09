@@ -1,5 +1,6 @@
 export const FRONTEND_DEV_URL = "http://localhost:3000";
-export const FRONTEND_URL = "http://localhost:3000"; // will change this after hosting deploy
+export const FRONTEND_URL =
+  "https://flutterwave-challenge-b2f12.firebaseapp.com";
 export const FLUTTERWAVE_API_URL = "https://ravesandboxapi.flutterwave.com";
 
 export const SALT_ROUNDS = 10;

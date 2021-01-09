@@ -26,7 +26,7 @@ export const signup = async (req: express.Request, res: express.Response) => {
     .get();
 
   if (existingMerchantSnapshot.size > 0) {
-    return res.status(400).send({ error: "Email in use by another user" });
+    return res.status(400).send({ error: "Email in use by another merchant" });
   }
 
   const hashedPassword = bcrypt.hashSync(password, consts.SALT_ROUNDS);
@@ -182,7 +182,7 @@ export const requestAccountApproval = async (
     },
     currency: "USD",
     merchantId: id,
-    redirectUrl: consts.FRONTEND_DEV_URL,
+    redirectUrl: consts.FRONTEND_URL,
   });
 
   if (!response || !response.ok || !response.data) {
