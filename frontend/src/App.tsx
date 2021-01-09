@@ -2,6 +2,7 @@ import { Component } from "react";
 import "./App.css";
 import { Dashboard, NavBar, Signup } from "./components";
 
+import * as apis from "./apis";
 interface AppState {
   isAuthenticated: boolean;
   merchant: Merchant | null;
@@ -34,18 +35,22 @@ class App extends Component {
     this.setState({ [field]: value });
   };
 
-  logoutAction = () => {
-    localStorage.removeItem("MERCHANT");
-    localStorage.removeItem("SESSION");
-    localStorage.removeItem("STORE");
-    localStorage.removeItem("DISPATCH_RIDER");
-
+  logoutAction = async () => {
     this.setState({
       isAuthenticated: false,
       merchant: null,
       store: null,
       dispatchRider: null,
     });
+
+    // if this fails, it should fail silently
+    await apis.merchants.logout();
+
+    // remove everything from localStorage
+    localStorage.removeItem("MERCHANT");
+    localStorage.removeItem("SESSION");
+    localStorage.removeItem("STORE");
+    localStorage.removeItem("DISPATCH_RIDER");
   };
 
   render() {

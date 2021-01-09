@@ -229,3 +229,13 @@ export const createStore = async (
 
   res.send({ store: store ?? null, dispatchRider: dispatchRider ?? null });
 };
+
+export const logout = async (req: express.Request, res: express.Response) => {
+  const firestore = firebaseAdmin.firestore();
+
+  const { id } = req.session;
+
+  await firestore.collection(consts.SESSIONS_COLLECTION).doc(id).delete();
+
+  res.sendStatus(200);
+};

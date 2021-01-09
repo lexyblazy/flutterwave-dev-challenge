@@ -44,6 +44,19 @@ export const login = async ({
   });
 };
 
+export const logout = async () => {
+  const session: Session = JSON.parse(localStorage.getItem("SESSION")!);
+
+  const api = apisauce.create({
+    baseURL: consts.SERVER_URL,
+    headers: {
+      authorization: session.token,
+    },
+  });
+
+  return api.post("/merchants/logout", {});
+};
+
 export const approveAccount = async () => {
   const session: Session = JSON.parse(localStorage.getItem("SESSION")!);
 

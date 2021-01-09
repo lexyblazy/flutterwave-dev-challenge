@@ -8,7 +8,9 @@ export const initialize = () => {
 
   router.post("/signup", handlers.signup);
 
-  router.post("/login", handlers.login)
+  router.post("/login", handlers.login);
+
+  router.post("/logout", auth.checkAuth, handlers.logout);
 
   router.post(
     "/approve-account",
