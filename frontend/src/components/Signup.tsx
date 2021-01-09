@@ -29,7 +29,6 @@ export const Signup = ({
     setLoading(true);
     setErrorMessage("");
 
-    console.log(formType);
     let message = "";
 
     if (formType === "signup") {

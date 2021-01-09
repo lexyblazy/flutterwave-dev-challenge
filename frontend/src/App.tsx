@@ -50,7 +50,6 @@ class App extends Component {
 
   render() {
     const { isAuthenticated, merchant, dispatchRider, store } = this.state;
-    console.log(store, dispatchRider);
 
     return (
       <>
