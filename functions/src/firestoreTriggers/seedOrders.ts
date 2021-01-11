@@ -9,11 +9,13 @@ export const seedOrders = async (
 ) => {
   const db = firebaseAdmin.firestore();
 
+  const batch = db.batch();
+
   const storeId = context.params.id;
 
-  const orders = Array(10)
+  Array(10)
     .fill("")
-    .map(() => {
+    .forEach(() => {
       const price = Math.ceil(2000 + Math.random() * 50000);
       const saleCommision = price * consts.SALE_COMMISION_PERCENT;
 
@@ -21,7 +23,7 @@ export const seedOrders = async (
       const deliveryCommission =
         deliveryFee * consts.DELIVERY_COMMISION_PERCENT;
 
-      return {
+      const order = {
         name: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
         price,
@@ -33,9 +35,10 @@ export const seedOrders = async (
           deliveryCommission,
         },
       };
+
+      const orderRef = db.collection(consts.ORDERS_COLLECTIONS).doc();
+      batch.set(orderRef, order);
     });
 
-  for (const order of orders) {
-    db.collection(consts.ORDERS_COLLECTIONS).doc().set(order);
-  }
+  await batch.commit();
 };
