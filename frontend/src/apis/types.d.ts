@@ -20,3 +20,7 @@ interface MerchantCreateStoreResponse {
   dispatchRider: DispatchRider;
   error: null;
 }
+
+interface MerchantOrdersReponse {
+  orders: Order[];
+}

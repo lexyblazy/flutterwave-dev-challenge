@@ -251,7 +251,14 @@ export const getOrders = async (
     .where("storeId", "==", merchantId)
     .get();
 
-  const orders = ordersSnapshots.docs.map((doc) => doc.data());
+  const orders = ordersSnapshots.docs.map((doc) => {
+    const order = doc.data() as OrderEntity;
+    return {
+      ...order,
+      id: doc.id,
+      createdAt: order.createdAt.toDate(),
+    };
+  });
 
   res.send({ orders });
 };

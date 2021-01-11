@@ -37,6 +37,20 @@ interface DispatchRiderEntity {
   phone: string;
   adddress: string;
 }
+
+interface OrderEntity {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: FirebaseFirestore.Timestamp;
+  price: number;
+  shippingCost: number;
+  storeId: string;
+  breakdown: {
+    saleCommission: number;
+    deliveryCommission: number;
+  };
+}
 // =================================================
 // External APIS
 // ================================================

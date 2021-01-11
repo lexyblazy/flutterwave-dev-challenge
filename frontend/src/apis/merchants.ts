@@ -45,7 +45,7 @@ export const login = async ({
 };
 
 export const logout = async () => {
-  const session: Session = JSON.parse(localStorage.getItem("SESSION")!);
+  const session: Session = JSON.parse(localStorage.getItem("SESSION")!) ?? {};
 
   const api = apisauce.create({
     baseURL: consts.SERVER_URL,
@@ -58,7 +58,7 @@ export const logout = async () => {
 };
 
 export const approveAccount = async () => {
-  const session: Session = JSON.parse(localStorage.getItem("SESSION")!);
+  const session: Session = JSON.parse(localStorage.getItem("SESSION")!) ?? {};
 
   const api = apisauce.create({
     baseURL: consts.SERVER_URL,
@@ -80,7 +80,7 @@ export const createStore = async ({
   name: string;
   description: string;
 }) => {
-  const session: Session = JSON.parse(localStorage.getItem("SESSION")!);
+  const session: Session = JSON.parse(localStorage.getItem("SESSION")!) ?? {};
 
   const api = apisauce.create({
     baseURL: consts.SERVER_URL,
@@ -93,4 +93,17 @@ export const createStore = async ({
     "/merchants/create-store",
     { name, description }
   );
+};
+
+export const getOrders = async () => {
+  const session: Session = JSON.parse(localStorage.getItem("SESSION")!) ?? {};
+
+  const api = apisauce.create({
+    baseURL: consts.SERVER_URL,
+    headers: {
+      authorization: session.token,
+    },
+  });
+
+  return api.get<MerchantOrdersReponse, GeneralApiError>("/merchants/orders");
 };

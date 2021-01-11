@@ -25,3 +25,17 @@ interface DispatchRider {
 
 type AppStateFields = "store" | "dispatchRider" | "merchant";
 type AppStateValues = Store | DispatchRider | Merchant;
+
+interface Order {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  shippingCost: number;
+  storeId: string;
+  createdAt: string;
+  breakdown: {
+    saleCommision: number;
+    deliveryCommission: number;
+  };
+}

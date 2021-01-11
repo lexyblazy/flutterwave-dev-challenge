@@ -8,6 +8,8 @@ interface DashboardProps {
   updateAppState: (field: AppStateFields, value: AppStateValues) => void;
 }
 
+const ordersList: Order[] = [];
+
 export const Dashboard = ({
   merchant,
   store,
@@ -22,6 +24,11 @@ export const Dashboard = ({
   const [formState, setFormState] = useState({
     name: "",
     description: "",
+    loading: false,
+  });
+
+  const [storeOrders, setStoreOrders] = useState({
+    orders: ordersList,
     loading: false,
   });
 
@@ -121,15 +128,87 @@ export const Dashboard = ({
     );
   };
 
+  const getStoreOrders = async () => {
+    setStoreOrders({ orders: [], loading: true });
+    setDashboardState({ ...dashboardState, errorMessage: "" });
+
+    const response = await apis.merchants.getOrders();
+    let orders: Order[] = [];
+
+    if (response && response.ok && response.data) {
+      if (response.data.orders.length > 0) {
+        orders = response.data.orders;
+        console.log("api success", storeOrders);
+      } else {
+        setDashboardState({
+          ...dashboardState,
+          errorMessage:
+            "You have no orders yet, Please try again in 10 seconds",
+        });
+      }
+    } else {
+      setDashboardState({
+        ...dashboardState,
+        errorMessage: "An error occurred, try again!",
+      });
+    }
+
+    setStoreOrders({ orders, loading: false });
+  };
+
+  const renderOrders = () => {
+    if (storeOrders.orders.length < 1) {
+      return;
+    }
+
+    const orderItems = storeOrders.orders.map((order: Order) => {
+      return (
+        <div key={order.id} className="col-sm-6 mb-3">
+          <div className="card">
+            <div className="card-body">
+              <h5 className="card-title">Item name: {order.name}</h5>
+              <p className="card-text">
+                Price: ${order.price.toFixed(2)} <br />
+                Shipping Cost: ${order.shippingCost.toFixed(2)} <br />
+                Date: {new Date(order.createdAt).toString()}
+              </p>
+              <p className="card-text">
+                <h6>Breakdown</h6>
+                Seller's payout: $
+                {(order.price - order.breakdown.saleCommision).toFixed(2)}{" "}
+                <br />
+                Jumga Sale Commision: $
+                {order.breakdown.saleCommision.toFixed(2)} <br />
+                Dispatch Rider payout: $
+                {(
+                  order.shippingCost - order.breakdown.deliveryCommission
+                ).toFixed(2)}{" "}
+                <br />
+                Jumga Delivery Commission: $
+                {order.breakdown.deliveryCommission.toFixed(2)}
+                <br />
+              </p>
+              <p className="card-text"></p>
+
+              {/* <a href="#" class="btn btn-primary">
+              Go somewhere
+            </a> */}
+            </div>
+          </div>
+        </div>
+      );
+    });
+
+    return <div className="row mt-5">{orderItems}</div>;
+  };
+
   return (
     <div>
       {errorMessage && (
         <div className="alert alert-danger text-center">{errorMessage}</div>
       )}
 
-      {/* {store && !store.approved && ( */}
       {showAccountApproveAction(merchant, store)}
-      {/* )} */}
 
       {store === null && (
         <form onSubmit={createStoreAction}>
@@ -172,6 +251,19 @@ export const Dashboard = ({
         </form>
       )}
       {showStoreAndDispatcherInfo(store, dispatchRider)}
+
+      <div className="mt-3 text-center">
+        {store && store.approved && (
+          <button
+            className="btn btn-success"
+            onClick={getStoreOrders}
+            disabled={storeOrders.loading}
+          >
+            View all orders
+          </button>
+        )}
+      </div>
+      {renderOrders()}
     </div>
   );
 };
