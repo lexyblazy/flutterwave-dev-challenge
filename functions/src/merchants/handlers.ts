@@ -239,3 +239,19 @@ export const logout = async (req: express.Request, res: express.Response) => {
 
   res.sendStatus(200);
 };
+
+export const getOrders = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const merchantId = req.user.id;
+  const firestore = firebaseAdmin.firestore();
+  const ordersSnapshots = await firestore
+    .collection(consts.ORDERS_COLLECTIONS)
+    .where("storeId", "==", merchantId)
+    .get();
+
+  const orders = ordersSnapshots.docs.map((doc) => doc.data());
+
+  res.send({ orders });
+};

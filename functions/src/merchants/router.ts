@@ -25,5 +25,12 @@ export const initialize = () => {
     handlers.createStore
   );
 
+  router.get(
+    "/orders",
+    auth.checkAuth,
+    auth.checkApprovalStatus,
+    handlers.getOrders
+  );
+
   return router;
 };
