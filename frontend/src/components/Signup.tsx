@@ -123,22 +123,30 @@ export const Signup = ({
       {formType === "signup" && (
         <div className="row mb-3">
           <div className="col">
+            <label className="form-label" htmlFor="firstname">
+              First name
+            </label>
             <input
               type="text"
               className="form-control"
               placeholder="First name"
               aria-label="First name"
+              id="firstname"
               onChange={(e) =>
                 setState({ ...state, firstName: e.target.value })
               }
             />
           </div>
           <div className="col">
+            <label className="form-label" htmlFor="lastname">
+              Last name
+            </label>
             <input
               type="text"
               className="form-control"
               placeholder="Last name"
               aria-label="Last name"
+              id="lastname"
               onChange={(e) => setState({ ...state, lastName: e.target.value })}
             />
           </div>
