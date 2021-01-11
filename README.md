@@ -35,10 +35,10 @@ yarn start
 
 You can use one the tests cards [here](https://developer.flutterwave.com/docs/test-cards) to make payments.
 
-When a store is created, there's a process(SeedOrdersForNewStore) that seeds some dummy orders data for the store. it takes about 3 seconds
+When a store is created, there's a process(`SeedOrdersForNewStore`) that seeds some dummy orders data for the store. it takes about 5 seconds
 
 Using the values from the sample breakdown in the spec, it can be deduced that
 
-- Delivery fee is 7.5% of order price.
-- Jumga Sale commission is 2.5% of order price
-- Jumga Delivery commision is 20% of delivery fee
+- Delivery fee is `7.5%` of order price.
+- Jumga Sale commission is `2.5%` of order price
+- Jumga Delivery commision is `20%` of delivery fee
