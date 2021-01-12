@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import * as apis from "../apis";
+import { Loader } from "./Loader";
 
 interface DashboardProps {
   merchant: Merchant;
@@ -92,13 +93,17 @@ export const Dashboard = ({
             fee is required for approval, If you just recently made payment,
             Ignore this action while we confirm the payment
           </p>
-          <button
-            className="btn btn-primary"
-            onClick={approveAccountAction}
-            disabled={loading}
-          >
-            Pay $20
-          </button>
+          {loading ? (
+            <Loader />
+          ) : (
+            <button
+              className="btn btn-primary"
+              onClick={approveAccountAction}
+              disabled={loading}
+            >
+              Pay $20
+            </button>
+          )}
         </div>
       );
     }
@@ -240,28 +245,36 @@ export const Dashboard = ({
               value={formState.description}
             ></textarea>
           </div>
-          <button
-            className="btn btn-success"
-            disabled={
-              !formState.description || !formState.name || formState.loading
-            }
-          >
-            Create my store
-          </button>
+          {formState.loading ? (
+            <Loader />
+          ) : (
+            <button
+              className="btn btn-success"
+              disabled={
+                !formState.description || !formState.name || formState.loading
+              }
+            >
+              Create my store
+            </button>
+          )}
         </form>
       )}
       {showStoreAndDispatcherInfo(store, dispatchRider)}
 
       <div className="mt-3 text-center">
-        {store && store.approved && (
-          <button
-            className="btn btn-success"
-            onClick={getStoreOrders}
-            disabled={storeOrders.loading}
-          >
-            View all orders
-          </button>
-        )}
+        {store &&
+          store.approved &&
+          (storeOrders.loading ? (
+            <Loader />
+          ) : (
+            <button
+              className="btn btn-success"
+              onClick={getStoreOrders}
+              disabled={storeOrders.loading}
+            >
+              View all orders
+            </button>
+          ))}
       </div>
       {renderOrders()}
     </div>

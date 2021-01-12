@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 import * as apis from "../apis";
 import * as utils from "../utils";
+import { Loader } from "./Loader";
 
 export const Signup = ({
   setAuthentication,
@@ -153,24 +154,30 @@ export const Signup = ({
         </div>
       )}
 
-      <button
-        type="submit"
-        className="btn btn-primary mb-2"
-        disabled={disabled}
-      >
-        {formType[0].toUpperCase() + formType.slice(1)}
-      </button>
-      <div style={{ cursor: "pointer" }}>
-        {formType === "signup" ? (
-          <small className="btn-link" onClick={() => setFormType("login")}>
-            Already have an account? Login!
-          </small>
-        ) : (
-          <small className="btn-link" onClick={() => setFormType("signup")}>
-            New merchant? Signup!
-          </small>
-        )}
-      </div>
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <button
+            type="submit"
+            className="btn btn-primary mb-2"
+            disabled={disabled}
+          >
+            {formType[0].toUpperCase() + formType.slice(1)}
+          </button>
+          <div style={{ cursor: "pointer" }}>
+            {formType === "signup" ? (
+              <small className="btn-link" onClick={() => setFormType("login")}>
+                Already have an account? Login!
+              </small>
+            ) : (
+              <small className="btn-link" onClick={() => setFormType("signup")}>
+                New merchant? Signup!
+              </small>
+            )}
+          </div>
+        </>
+      )}
     </form>
   );
 };
